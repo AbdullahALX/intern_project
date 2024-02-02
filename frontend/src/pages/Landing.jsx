@@ -24,13 +24,13 @@ const Landing = () => {
           <p class="max-w-2xl mb-6 text-gray-800 lg:mb-8 md:text-xl lg:text-2xl text-pretty lg:leading-10 font-[300] font-Roboto ">
             Visualize runs, create categories using{' '}
             <span className="text-[#61269e] font-bold md:text-2xl text-lg ">
-              MatchMatrix
+              MmatchMatrix
             </span>{' '}
             and elevate in soccer strategy effortlessly. Join us today and
             experience the future of soccer analytics
           </p>
           <Link
-            to="/addUser"
+            to="/visualize"
             className="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center bg-[#61269e]  hover:bg-[#8e5ebd] text-white border-b-4 border-[#8e5ebd] hover:border-[#61269e] rounded  cursor-pointer"
           >
             Get started
