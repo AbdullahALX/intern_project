@@ -68,13 +68,36 @@ router.get('/addPlayer', async (req, res) => {
   }
 });
 
-// router.get('/test', async (req, res) => {
-//   console.log(homePlayerDate[`${data.homePlayers[1].optaId}`]);
-//   // console.log(String(`${data.awayPlayers[1].optaId}`));
+router.get('/getPlayers', async (req, res) => {
+  const playersHomeInfo = schemas.HomePlayers;
+  const AwayPlayersInfo = schemas.AwayPlayers;
 
-//   // console.log(awayPlayerDate['427869']);
-//   // res.status(200).send(awayPlayerDate['45215'].Runs);
-// });
+  const homeList = await playersHomeInfo.find({});
+  const awayList = await AwayPlayersInfo.find({});
+  if (homeList && awayList) {
+    console.log(homeList);
+    res.json({
+      playersHomeInfo: homeList,
+      AwayPlayersInfo: awayList,
+    });
+  } else {
+    res.status(400).send('no data');
+  }
+});
+
+router.get('/getMatch', async (req, res) => {
+  const matchInfo = schemas.MatchData;
+
+  const matchList = await matchInfo.find({});
+  if (matchList) {
+    console.log(matchList);
+    res.json({
+      matchInfo: matchList,
+    });
+  } else {
+    res.status(400).send('no data for match');
+  }
+});
 
 router.get('/addMatch', async (req, res) => {
   const match = schemas.MatchData;
