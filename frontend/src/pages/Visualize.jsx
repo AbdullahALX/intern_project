@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 import orl from '../assets/orlLogo.png';
 import chi from '../assets/chiLogo.png';
+import mls from '../assets/mls.jpg';
 import Time from '../components/TimeIcon';
 import CalenderIcon from '../components/CalenderIcon';
 
