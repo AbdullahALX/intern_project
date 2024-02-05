@@ -13,29 +13,6 @@ export const playerList = [
   { pos: 'gk' },
 ];
 
-export const importantSoccerRuns = [
-  {
-    run: 'Dribbling',
-    des: 'A player uses their footwork and ball control skills to maneuver the ball past opponents, advancing down the field.',
-  },
-  {
-    run: 'Overlapping Run',
-    des: 'A full-back or wing-back moves forward along the sideline to support the attack, often passing a teammate before receiving the ball back.',
-  },
-  {
-    run: 'Through Ball Run',
-    des: "A player makes a forward run behind the opposition's defense to receive a well-timed through ball, attempting to get behind the defensive line.",
-  },
-  {
-    run: 'Diagonal Run',
-    des: "A player makes an angled run across the field, either to create space or receive a pass that bypasses the opponent's defensive line.",
-  },
-  {
-    run: 'Tracking Back Run',
-    des: 'A player runs back towards their own goal to defend against an opposing player or support the defense.',
-  },
-];
-
 export const handlePositions = (players) => {
   const positionArrays = {
     cam: [],

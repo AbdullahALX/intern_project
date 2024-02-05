@@ -10,9 +10,7 @@ import {
   handlePositions,
   cleanPlayerList,
   playerList,
-  importantSoccerRuns,
 } from '../controllers/handleData';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 import Test2 from '../components/Test2';
 
@@ -35,6 +33,22 @@ const Test = () => {
       y: 0,
     },
   ]);
+  const [runsType, setRunsType] = useState([
+    {
+      run: 'Overlapping Run',
+    },
+    {
+      run: 'Through Ball Run',
+    },
+    {
+      run: 'Diagonal Run',
+    },
+    {
+      run: 'Tracking Back Run',
+    },
+  ]);
+  const [inputValue, setInputValue] = useState();
+
   const actualWidth = 68.68302154541016; // meters
   const actualLength = 109.908447265625; // meters
   const currentWidthPx = 800; // pixels
@@ -103,6 +117,17 @@ const Test = () => {
     if (prevScaledCoordinates.x) setCount(count + 1);
   };
 
+  const handleAddbutton = ({ awayPlayer }) => {
+    if (inputValue) setRunsType([...runsType, { run: `${inputValue}` }]);
+
+    setInputValue('');
+    console.log(awayPlayer);
+  };
+
+  const onChangeHandler = (event) => {
+    setInputValue(event.target.value);
+  };
+
   const Dropdown = ({ data }) => {
     const [isOpen, setIsOpen] = useState(false);
     return (
@@ -142,16 +167,29 @@ const Test = () => {
     <div className=" w-screen h-screen flex  flex-col items-center  justify-start  bg-slate-100    ">
       <div className=" mx-10 my-3 py-2 px-10 z-10   ">
         <Dropdown />
-        <ul className="w-full text-xs   sm:text-sm justify-center lg:justify-center items-center flex flex-row space-x-1 mt-3 overflow-hidden mb-4">
-          {importantSoccerRuns?.map((type, i) => {
+
+        <ul className="w-full text-xs   sm:text-sm justify-center lg:justify-center items-center flex flex-row space-x-1 mt-6 overflow-hidden mb-4">
+          {runsType?.map((type, i) => {
             return (
               <li>
-                <button className="px-4 py-2 bg-gray-200 active:bg-[#6a4094] active:text-gray-100 rounded-full text-sm text-gray-700 hover:bg-[#8e5ebd] hover:text-gray-200">
+                <button className="px-4 py-2 bg-gray-200 focus:bg-[#6a4094] focus:text-gray-100 rounded-full text-sm text-gray-700 hover:bg-[#8e5ebd] hover:text-gray-200">
                   {type.run}
                 </button>
               </li>
             );
           })}
+          <input
+            className="px-4 py-2 bg-gray-200 focus:bg-[#3a3a3a] focus:text-gray-100 rounded-full text-sm text-gray-700 hover:bg-[#454545] hover:text-gray-200 outline-none"
+            placeholder="Create new category "
+            value={inputValue}
+            onChange={onChangeHandler}
+          />
+          <button
+            className="px-4 py-2 bg-gray-200  rounded-full text-sm text-gray-700 hover:bg-[#66c361] hover:text-gray-200"
+            onClick={handleAddbutton}
+          >
+            +
+          </button>
         </ul>
       </div>
       <m.div
