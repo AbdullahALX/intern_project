@@ -10,6 +10,7 @@ import chi from '../assets/chiLogo.png';
 import mls from '../assets/mls.jpg';
 import Time from '../components/TimeIcon';
 import CalenderIcon from '../components/CalenderIcon';
+import { handlePositions, cleanPlayerList } from '../controllers/handleData';
 
 const Visualize = () => {
   const [showModal, setShowModal] = useState(false);
@@ -24,22 +25,8 @@ const Visualize = () => {
     fetchMatchData();
   }, []);
 
-  const cleanPlayerList = (players) => {
-    let data = [];
-
-    for (let i = 0; i < players.length; i++) {
-      if (players[i].position == 'SUB' && players[i].runs < 1) {
-        //it is SUB player and never participate in the match , then we ignore him
-        continue;
-      } else {
-        data.push(players[i]);
-      }
-    }
-
-    return data;
-  };
-
   const fetchPlayerData = () => {
+    console.log(isNaN(awayPlayerList));
     axios.get(`${url}/getPlayers`).then((response) => {
       let dataLastAway = handlePositions(
         cleanPlayerList(response.data.AwayPlayersInfo)
@@ -60,40 +47,12 @@ const Visualize = () => {
     });
   };
 
-  const handlePositions = (players) => {
-    const positionArrays = {
-      cam: [],
-      rcb: [],
-      gk: [],
-      lcb: [],
-      rb: [],
-      lb: [],
-      st: [],
-      rw: [],
-      lw: [],
-      rdm: [],
-      ldm: [],
-    };
-
-    for (let i = 0; i < players.length; i++) {
-      const position = players[i].position.toLowerCase();
-
-      if (positionArrays[position]) {
-        positionArrays[position].push(players[i]);
-      } else {
-        console.log('noneee');
-      }
-    }
-
-    return positionArrays;
-  };
-
   const ShowModal = () => {
     let homeTeam = {
       //orl
       style: {
         color: '#61269e',
-        numberColor: '#f2d282',
+        numberColor: '#f8f8f8',
         nameColor: '#f2d282',
       },
 
@@ -260,9 +219,7 @@ const Visualize = () => {
               </div>
             </div>
           </>
-        ) : (
-          console.log(matchList)
-        )}
+        ) : null}
       </>
     );
   };
@@ -276,14 +233,14 @@ const Visualize = () => {
         </h1>
       </div>
 
-      <div className="block rounded-lg w-[80%] bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] ">
+      <div className="block rounded-lg w-[80%]   bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] ">
         {matchList &&
           matchList.map((match) => (
             <div className="p-6" key={match._id}>
               <div className="flex flex-row w-full items-center justify-center">
                 <img
                   src={orl}
-                  className="logo w-[3rem] object-contain md:w-[6rem] ml-10"
+                  className="logo w-[3rem] object-contain md:w-[6rem] ml-3"
                   alt=""
                 />
                 <p className="mx-6">
@@ -297,7 +254,7 @@ const Visualize = () => {
                 </p>
                 <img
                   src={chi}
-                  className="logo w-[3rem] object-contain md:w-[6rem] mr-10"
+                  className="logo w-[3rem] object-contain md:w-[6rem] mr-3"
                   alt=""
                 />
                 <div className="flex flex-row items-center mx-10 gap-3">
@@ -305,7 +262,7 @@ const Visualize = () => {
                   <p className="text-[#b2b2b2] font-light">:</p>
                   <p className="text-[#b2b2b2] font-light">{match.awayScore}</p>
                 </div>
-                <div className="w-full flex flex-row text-center items-center gap-3 mx-5">
+                <div className="w-full flex flex-row text-center items-center gap-3 mx-3">
                   <Time />
 
                   <p className="text-[#b2b2b2] font-light">
@@ -317,7 +274,7 @@ const Visualize = () => {
                     })}
                   </p>
                 </div>
-                <div className="w-full flex flex-row items-center gap-3 mx-5">
+                <div className="w-full flex flex-row items-center gap-3 mx-3">
                   <CalenderIcon />
                   <p className="text-[#b2b2b2] font-light">
                     {new Date(match.startTime)
@@ -325,11 +282,35 @@ const Visualize = () => {
                       .replace(/\//g, ' ')}
                   </p>
                 </div>
+                <Link
+                  to="/test"
+                  className="w-full flex items-center justify-center cursor-pointer text-[#b2b2b2] hover:text-[#61269e]"
+                >
+                  Visualize
+                  <svg
+                    className="w-5 h-5 ml-2 -mr-1"
+                    fill="currentColor"
+                    viewBox="-4 0 32 32"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g
+                      id="SVGRepo_tracerCarrier"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></g>
+                    <g id="SVGRepo_iconCarrier">
+                      <title>clear</title>
+                      <path d="M13.688 9.219v-3.969c0-0.719-0.531-1.25-1.219-1.25h-0.938c-0.688 0-1.219 0.531-1.219 1.25v3.969c0 0.688 0.531 1.25 1.219 1.25h0.938c0.688 0 1.219-0.563 1.219-1.25zM8.406 9.969l-2.813-2.781c-0.469-0.469-1.281-0.469-1.75 0l-0.656 0.656c-0.469 0.469-0.469 1.281 0 1.75l2.781 2.813c0.469 0.469 1.313 0.469 1.781 0l0.656-0.656c0.469-0.469 0.469-1.313 0-1.781zM18.031 12.406l2.781-2.813c0.469-0.469 0.469-1.281 0-1.75l-0.656-0.656c-0.469-0.469-1.281-0.469-1.75 0l-2.813 2.781c-0.469 0.469-0.469 1.313 0 1.781l0.656 0.656c0.469 0.469 1.313 0.469 1.781 0zM1.25 17.688h3.969c0.688 0 1.25-0.531 1.25-1.219v-0.969c0-0.688-0.563-1.188-1.25-1.188h-3.969c-0.719 0-1.25 0.5-1.25 1.188v0.969c0 0.688 0.531 1.219 1.25 1.219zM18.781 17.688h3.969c0.719 0 1.25-0.531 1.25-1.219v-0.969c0-0.688-0.531-1.188-1.25-1.188h-3.969c-0.688 0-1.25 0.5-1.25 1.188v0.969c0 0.688 0.563 1.219 1.25 1.219zM5.594 24.781l2.813-2.781c0.469-0.469 0.469-1.281 0-1.75l-0.656-0.688c-0.469-0.469-1.313-0.469-1.781 0l-2.781 2.844c-0.469 0.469-0.469 1.281 0 1.75l0.656 0.625c0.469 0.469 1.281 0.469 1.75 0zM20.813 22.406l-2.781-2.844c-0.469-0.469-1.313-0.469-1.781 0l-0.656 0.688c-0.469 0.469-0.469 1.281 0 1.75l2.813 2.781c0.469 0.469 1.281 0.469 1.75 0l0.656-0.625c0.469-0.469 0.469-1.281 0-1.75zM13.688 26.75v-3.969c0-0.688-0.531-1.25-1.219-1.25h-0.938c-0.688 0-1.219 0.563-1.219 1.25v3.969c0 0.719 0.531 1.25 1.219 1.25h0.938c0.688 0 1.219-0.531 1.219-1.25z"></path>{' '}
+                    </g>
+                  </svg>
+                </Link>
                 <button
                   onClick={() => setShowModal(!showModal)}
-                  className="w-full flex items-center justify-center cursor-pointer text-[#b2b2b2] hover:text-[#2e8a05]"
+                  className="w-full flex items-center cursor-pointer justify-center cursor-pointer text-[#b2b2b2] hover:text-[#2e8a05]"
                 >
-                  View line up
+                  Line up
                   <svg
                     className="w-5 h-5 ml-2 -mr-1"
                     fill="currentColor"
