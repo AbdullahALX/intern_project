@@ -69,7 +69,7 @@ const Movement = () => {
 
   const routeChange = async () => {
     let path = `/showVisualize`;
-    console.log(lastAwayData);
+    // console.log(lastAwayData);
 
     await axios
       .post(`${url}/addRes`, { homeData: lastHomeData, awayData: lastAwayData })
@@ -120,7 +120,7 @@ const Movement = () => {
   };
 
   const handlePos = (prevX, prevY, curX, CurY) => {
-    console.log(currentPos);
+    // console.log(currentPos);
     const eprevScaledCoordinates = scalePointsToPixels(
       prevX,
       prevY,
@@ -142,13 +142,13 @@ const Movement = () => {
     setPrevScaledCoordinates(eprevScaledCoordinates);
     setCurScaledCoordinates(ecurScaledCoordinates);
 
-    console.log(
-      `Scaled prev (x, y) coordinates in pixels: (${prevScaledCoordinates.x}, ${prevScaledCoordinates.y}, ${count})`
-    );
+    // console.log(
+    //   `Scaled prev (x, y) coordinates in pixels: (${prevScaledCoordinates.x}, ${prevScaledCoordinates.y}, ${count})`
+    // );
 
-    console.log(
-      `Scaled curren (x, y) coordinates in pixels: (${curScaledCoordinates.x}, ${curScaledCoordinates.y},${count})`
-    );
+    // console.log(
+    //   `Scaled curren (x, y) coordinates in pixels: (${curScaledCoordinates.x}, ${curScaledCoordinates.y},${count})`
+    // );
 
     if (prevScaledCoordinates.x) setCount(count + 1);
   };
@@ -157,7 +157,7 @@ const Movement = () => {
     if (inputValue) setRunsType([...runsType, { run: `${inputValue}` }]);
 
     setInputValue('');
-    console.log(awayPlayer);
+    // console.log(awayPlayer);
   };
 
   const onChangeHandler = (event) => {
@@ -207,8 +207,8 @@ const Movement = () => {
     } else {
       setLastAwayData((prevData) => [...prevData, awayDataToCapture]);
     }
-    console.log(lastAwayData);
-    console.log(lastHomeData);
+    // console.log(lastAwayData);
+    // console.log(lastHomeData);
   };
 
   const Dropdown = ({ data }) => {

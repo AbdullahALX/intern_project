@@ -32,7 +32,7 @@ const Show = () => {
         setHomeRes(response.data.homeData);
         setAwayRes(response.data.awayData);
 
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch((error) => {
         console.log(error);

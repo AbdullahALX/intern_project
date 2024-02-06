@@ -26,7 +26,7 @@ const Visualize = () => {
   }, []);
 
   const fetchPlayerData = () => {
-    console.log(isNaN(awayPlayerList));
+    // console.log(isNaN(awayPlayerList));
     axios.get(`${url}/getPlayers`).then((response) => {
       let dataLastAway = handlePositions(
         cleanPlayerList(response.data.AwayPlayersInfo)
