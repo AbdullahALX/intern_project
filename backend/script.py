@@ -3,11 +3,11 @@ import numpy as np
 import json
 
 def calculate_distance(x1, y1, x2, y2):
-    """Calculate Euclidean distance between two points."""
+    # Calculate Euclidean distance between two points.
     return np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
 def process_all_players_to_single_json(data, player_ids, min_run_distance=10.0, json_file_path='all_players_output.json', start_frame_range=0, end_frame_range=68698):
-    """Process multiple players and output their run data to a single JSON file with nested structure."""
+    #Process multiple players and output their run data to a single JSON file with nested structure.
     all_players_data = {}
 
     for player_id in player_ids:
@@ -57,8 +57,8 @@ def process_all_players_to_single_json(data, player_ids, min_run_distance=10.0, 
     with open(json_file_path, 'w') as json_file:
         json.dump(all_players_data, json_file, indent=4)
 
-# Example usage
-file_path = 'tracking_data.csv'  # Replace with your actual CSV file path
+
+file_path = 'tracking_data.csv'  
 df = pd.read_csv(file_path)
 
 # List of player IDs
@@ -86,7 +86,6 @@ away_player_ids = [
     169707
 ]
 
-# Now, opta_ids contains the list of "optaId" values in Python.
 
 # Process each player and save all in a single file
 process_all_players_to_single_json(df, away_player_ids,10.0,'all_away_players_output.json',0,68698)
