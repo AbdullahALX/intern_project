@@ -75,7 +75,7 @@ router.get('/getPlayers', async (req, res) => {
   const homeList = await playersHomeInfo.find({});
   const awayList = await AwayPlayersInfo.find({});
   if (homeList && awayList) {
-    console.log(homeList);
+    // console.log(homeList);
     res.json({
       playersHomeInfo: homeList,
       AwayPlayersInfo: awayList,
@@ -90,7 +90,7 @@ router.get('/getMatch', async (req, res) => {
 
   const matchList = await matchInfo.find({});
   if (matchList) {
-    console.log(matchList);
+    // console.log(matchList);
     res.json({
       matchInfo: matchList,
     });
@@ -108,6 +108,73 @@ router.get('/addMatch', async (req, res) => {
     addMatchInfo();
     res.status(200).send('Match Added!');
   }
+});
+
+const saveRes = (homeDataArray, awayDataArray) => {
+  if (homeDataArray.length <= 1) return;
+
+  homeDataArray.forEach((data) => {
+    const result = new schemas.HomeDataRes({
+      team: data.team,
+      runType: data.runType,
+      playerPos: data.playerPos,
+      playerName: data.playerName,
+      runsData: {
+        current_x: data.runsData.current_x,
+        current_y: data.runsData.current_y,
+        distance: data.runsData.distance,
+        end_frame: data.runsData.end_frame,
+        prev_x: data.runsData.prev_x,
+        prev_y: data.runsData.prev_y,
+      },
+    });
+
+    // Save the Mongoose model instance to the database
+    result.save();
+  });
+  if (awayDataArray.length <= 1) return;
+  awayDataArray.forEach((data) => {
+    const awayResult = new schemas.AwayDataRes({
+      team: data.team,
+      runType: data.runType,
+      playerPos: data.playerPos,
+      playerName: data.playerName,
+      runsData: {
+        current_x: data.runsData.current_x,
+        current_y: data.runsData.current_y,
+        distance: data.runsData.distance,
+        end_frame: data.runsData.end_frame,
+        prev_x: data.runsData.prev_x,
+        prev_y: data.runsData.prev_y,
+      },
+    });
+
+    // Save the Mongoose model instance to the database
+    awayResult.save();
+  });
+};
+
+const cleanSchema = () => {
+  schemas.AwayDataRes.deleteMany();
+};
+
+router.post('/addRes', async (req, res) => {
+  // const jsonObject = JSON.parse(data);
+  let receivedData = req.body;
+  if (isNaN(receivedData.homeData[0].length)) receivedData.homeData.shift();
+  if (isNaN(receivedData.awayData[0].length)) receivedData.awayData.shift();
+
+  console.log(receivedData.awayData.length);
+
+  //console.log(receivedData);
+
+  saveRes(receivedData.homeData, receivedData.awayData);
+
+  // const newHomeRes = new schemas.HomeDataRes(receivedData.homeData[1]);
+  // const saveHomeRes = newHomeRes.save();
+  res.status(200).send('done!');
+
+  // addUser(data);
 });
 
 export default router;

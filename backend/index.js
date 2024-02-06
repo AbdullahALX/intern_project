@@ -5,12 +5,16 @@ import dotenv from 'dotenv';
 
 import * as fs from 'fs';
 import csvParser from 'csv-parser';
+import bodyParser from 'body-parser';
 
 import router from './routers/router.js';
 
 const app = express();
 app.use(cors());
 dotenv.config();
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
 
 app.use('/', router);
 

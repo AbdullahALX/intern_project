@@ -283,7 +283,7 @@ const Visualize = () => {
                   </p>
                 </div>
                 <Link
-                  to="/test"
+                  to="/viewMovement"
                   className="w-full flex items-center justify-center cursor-pointer text-[#b2b2b2] hover:text-[#61269e]"
                 >
                   Visualize
@@ -308,7 +308,7 @@ const Visualize = () => {
                 </Link>
                 <button
                   onClick={() => setShowModal(!showModal)}
-                  className="w-full flex items-center cursor-pointer justify-center cursor-pointer text-[#b2b2b2] hover:text-[#2e8a05]"
+                  className="w-full flex items-center  justify-center cursor-pointer text-[#b2b2b2] hover:text-[#2e8a05]"
                 >
                   Line up
                   <svg

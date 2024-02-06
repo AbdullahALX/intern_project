@@ -3,7 +3,11 @@ import axios from 'axios';
 import test from '../assets/test.svg';
 import { motion as m } from 'framer-motion';
 import { frame } from 'framer-motion';
-import { AiFillCaretUp, AiFillCaretDown } from 'react-icons/ai';
+import {
+  AiFillCaretUp,
+  AiFillCaretDown,
+  AiFillCaretRight,
+} from 'react-icons/ai';
 
 import { scalePointsToPixels } from '../controllers/scalePointsToPixels';
 import {
@@ -11,15 +15,17 @@ import {
   cleanPlayerList,
   playerList,
 } from '../controllers/handleData';
+import { useNavigate } from 'react-router-dom';
 
 import Test2 from '../components/Test2';
 
-const Test = () => {
+const Movement = () => {
   const [awayPlayerList, setAwayPlayerList] = useState({});
   const [homePlayerList, setHomePlayerList] = useState({});
   const [clicked, setClicked] = useState(false);
   const [count, setCount] = useState(0);
   const [currentPos, setCurrentPos] = useState({});
+  const [currentTeam, setCurrentTeam] = useState({});
 
   const [prevScaledCoordinates, setPrevScaledCoordinates] = useState([
     {
@@ -49,12 +55,33 @@ const Test = () => {
   ]);
   const [inputValue, setInputValue] = useState();
 
+  const [lastHomeData, setLastHomeData] = useState([{}]);
+  const [lastAwayData, setLastAwayData] = useState([{}]);
+
   const actualWidth = 68.68302154541016; // meters
   const actualLength = 109.908447265625; // meters
   const currentWidthPx = 800; // pixels
   const currentLengthPx = 600; // pixels
 
   const url = 'http://localhost:3001';
+
+  const navigate = useNavigate();
+
+  const routeChange = async () => {
+    let path = `/showVisualize`;
+    console.log(lastAwayData);
+
+    await axios
+      .post(`${url}/addRes`, { homeData: lastHomeData, awayData: lastAwayData })
+      .then((res) => {
+        if (res.status == 200) {
+          navigate(path);
+        }
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  };
 
   useEffect(() => {
     fetchPlayerData();
@@ -75,12 +102,21 @@ const Test = () => {
   };
 
   const handleTest = () => {
-    handlePos(
-      awayPlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.prev_x,
-      awayPlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.prev_y,
-      awayPlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.current_x,
-      awayPlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.current_y
-    );
+    if (currentTeam == 'Away') {
+      handlePos(
+        awayPlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.prev_x,
+        awayPlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.prev_y,
+        awayPlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.current_x,
+        awayPlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.current_y
+      );
+    } else if (currentTeam == 'Home') {
+      handlePos(
+        homePlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.prev_x,
+        homePlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.prev_y,
+        homePlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.current_x,
+        homePlayerList?.[`${currentPos}`]?.[0]?.runs[count]?.current_y
+      );
+    }
   };
 
   const handlePos = (prevX, prevY, curX, CurY) => {
@@ -128,10 +164,86 @@ const Test = () => {
     setInputValue(event.target.value);
   };
 
+  const handleRunsButtons = (runType, currentPos, team) => {
+    if (isNaN(currentPos.length)) return;
+
+    let runsHome = homePlayerList?.[`${currentPos}`]?.[0]?.runs[count];
+    let runsAway = awayPlayerList?.[`${currentPos}`]?.[0]?.runs[count];
+
+    const awayDataToCapture = {
+      team: team,
+      runType: runType,
+      playerPos: `${awayPlayerList?.[`${currentPos}`]?.[0].number}`,
+      playerName: `${awayPlayerList?.[`${currentPos}`]?.[0].name}`,
+      runsData: {
+        current_x: runsAway.current_x,
+        current_y: runsAway.current_y,
+        distance: runsAway.distance,
+        end_frame: runsAway.end_frame,
+        prev_x: runsAway.prev_x,
+        prev_y: runsAway.prev_y,
+      },
+    };
+
+    const homeDataToCapture = {
+      team: team,
+      runType: runType,
+      playerPos: `${homePlayerList?.[`${currentPos}`]?.[0].position}`,
+      playerNumber: `${homePlayerList?.[`${currentPos}`]?.[0].number}`,
+      playerName: `${homePlayerList?.[`${currentPos}`]?.[0].name}`,
+      runsData: {
+        current_x: runsHome.current_x,
+        current_y: runsHome.current_y,
+        distance: runsHome.distance,
+        end_frame: runsHome.end_frame,
+        prev_x: runsHome.prev_x,
+        prev_y: runsHome.prev_y,
+      },
+    };
+
+    if (team === 'Home') {
+      setLastHomeData((prevData) => [...prevData, homeDataToCapture]);
+    } else {
+      setLastAwayData((prevData) => [...prevData, awayDataToCapture]);
+    }
+    console.log(lastAwayData);
+    console.log(lastHomeData);
+  };
+
   const Dropdown = ({ data }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isTeamOpen, setIsTeamOpen] = useState(false);
     return (
-      <div className="relative flex flex-col items-center  rounded-lg">
+      <div className="relative flex flex-row items-center justify-center gap-5  rounded-lg">
+        <button
+          onClick={() => setIsTeamOpen((prev) => !prev)}
+          className="inline-flex items-center font-mono justify-center px-8 py-1 text-base font-medium text-centerbg-gray-200 active:bg-[#6a4094] border-[1px] border-[#6a4094] active:text-gray-100 rounded-full  text-gray-700 hover:bg-[#8e5ebd] hover:text-gray-200  cursor-pointer"
+        >
+          Team{' '}
+          {!isTeamOpen ? (
+            <AiFillCaretDown className="ml-2 mt-1 h-8" />
+          ) : (
+            <AiFillCaretUp className=" ml-2 mt-1 h-8" />
+          )}
+        </button>
+
+        {isTeamOpen && (
+          <div className="bg-[#8e5ebd] px-7 py-3 h-[7rem]  overflow-y-auto absolute left-0 right-0 mx-auto top-[55px] flex flex-col items-start rounded rounder-t-full ">
+            <button
+              className="flex  px-7 py-2   my-1  justify-between w-full  hover:bg-[#c4abdc]  active:bg-[#d2bee4]  cursor-pointer  rounded "
+              onClick={() => setCurrentTeam('Away')}
+            >
+              <h3 className=" text-white font-mono ">Away</h3>
+            </button>
+
+            <button
+              className="flex w-full px-7 py-2   my-1  justify-between hover:bg-[#c4abdc]  active:bg-[#d2bee4]  cursor-pointer  rounded "
+              onClick={() => setCurrentTeam('Home')}
+            >
+              <h3 className=" text-white font-mono">Home</h3>
+            </button>
+          </div>
+        )}
         <button
           onClick={() => setIsOpen((prev) => !prev)}
           className="inline-flex items-center font-mono justify-center px-8 py-1 text-base font-medium text-centerbg-gray-200 active:bg-[#6a4094] border-[1px] border-[#6a4094] active:text-gray-100 rounded-full  text-gray-700 hover:bg-[#8e5ebd] hover:text-gray-200  cursor-pointer"
@@ -145,10 +257,10 @@ const Test = () => {
         </button>
 
         {isOpen && (
-          <div className="bg-[#8e5ebd] px-7 py-3 h-[11rem]  overflow-y-auto absolute top-[55px] flex flex-col items-start rounded rounder-t-full ">
+          <div className="bg-[#8e5ebd] px-7 py-3 h-[11rem]  overflow-y-auto absolute left-0 right-0 mx-auto top-[55px] flex flex-col items-start rounded rounder-t-full ">
             {playerList.map((item, i) => (
               <button
-                className="flex w-full px-7 py-2   my-1  justify-between hover:bg-[#c4abdc]  active:bg-[#d2bee4]  cursor-pointer  rounded "
+                className="flex w-full px-7 py-2   my-1  justify-between  hover:bg-[#c4abdc]  active:bg-[#d2bee4]  cursor-pointer  rounded "
                 key={i}
                 onClick={() => setCurrentPos(item.pos)}
               >
@@ -157,6 +269,24 @@ const Test = () => {
                 </h3>
               </button>
             ))}
+          </div>
+        )}
+        <button
+          onClick={routeChange}
+          className="inline-flex items-center font-mono justify-center px-8 py-1 text-base font-medium text-centerbg-gray-200 active:bg-[#6a4094] border-[1px] border-[#6a4094] active:text-gray-100 rounded-full  text-gray-700 hover:bg-[#8e5ebd] hover:text-gray-200  cursor-pointer"
+        >
+          Submit
+          <AiFillCaretRight className="ml-2 mt-1 h-8" />
+        </button>
+        {!isNaN(currentPos.length) && !isNaN(currentTeam.length) && (
+          <div
+            className={`inline-flex items-center font-mono font-semiboldbold justify-center px-8 py-1 text-base font-lg ${
+              currentTeam === 'Home' ? 'text-black' : 'text-red-500'
+            } `}
+          >
+            {currentTeam.toUpperCase()}
+            {', '}
+            {currentPos.toString().toUpperCase()}
           </div>
         )}
       </div>
@@ -172,7 +302,12 @@ const Test = () => {
           {runsType?.map((type, i) => {
             return (
               <li>
-                <button className="px-4 py-2 bg-gray-200 focus:bg-[#6a4094] focus:text-gray-100 rounded-full text-sm text-gray-700 hover:bg-[#8e5ebd] hover:text-gray-200">
+                <button
+                  className="px-4 py-2 bg-gray-200 focus:bg-[#6a4094] focus:text-gray-100 rounded-full text-sm text-gray-700 hover:bg-[#8e5ebd] hover:text-gray-200"
+                  onClick={() =>
+                    handleRunsButtons(type.run, currentPos, currentTeam)
+                  }
+                >
                   {type.run}
                 </button>
               </li>
@@ -203,7 +338,9 @@ const Test = () => {
       >
         {!isNaN(prevScaledCoordinates.x) && !isNaN(curScaledCoordinates.y) ? (
           <m.div
-            className="bg-black  rounded-full border-2 flex p-4 w-4 h-3  "
+            className={`${
+              currentTeam === 'Home' ? 'bg-black' : 'bg-red-500'
+            } bg-black  rounded-full border-2 flex p-4 w-4 h-3 `}
             variants={{
               initial: {
                 position: 'fixed',
@@ -244,4 +381,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default Movement;

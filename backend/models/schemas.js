@@ -56,13 +56,36 @@ const awayPlayers = new Schema({
   runs: [runs],
 });
 
+const runsDataSchema = new mongoose.Schema({
+  current_x: { type: Number },
+  current_y: { type: Number },
+  distance: { type: Number },
+  end_frame: { type: Number },
+  prev_x: { type: Number },
+  prev_y: { type: Number },
+});
+
+const resultsSchema = new mongoose.Schema({
+  team: { type: String },
+  runType: { type: String },
+  playerPos: { type: String },
+  playerName: { type: String },
+  runsData: runsDataSchema,
+});
+
 const MatchData = mongoose.model('MatchData', matchData, 'matchData');
 const HomePlayers = mongoose.model('HomePlayers', homePlayers, 'HomePlayers');
 const AwayPlayers = mongoose.model('AwayPlayers', awayPlayers, 'AwayPlayers');
+
+const AwayDataRes = mongoose.model('AwayDataRes', resultsSchema, 'AwayDataRes');
+const HomeDataRes = mongoose.model('HomeDataRes', resultsSchema, 'HomeDataRes');
+
 const mySchemas = {
   MatchData: MatchData,
   HomePlayers: HomePlayers,
   AwayPlayers: AwayPlayers,
+  AwayDataRes: AwayDataRes,
+  HomeDataRes: HomeDataRes,
 };
 
 export default mySchemas;
