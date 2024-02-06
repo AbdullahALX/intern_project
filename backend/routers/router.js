@@ -110,7 +110,7 @@ router.get('/addMatch', async (req, res) => {
   }
 });
 
-const saveRes = (homeDataArray, awayDataArray) => {
+const saveResHome = (homeDataArray) => {
   if (homeDataArray.length <= 1) return;
 
   homeDataArray.forEach((data) => {
@@ -118,6 +118,7 @@ const saveRes = (homeDataArray, awayDataArray) => {
       team: data.team,
       runType: data.runType,
       playerPos: data.playerPos,
+      playerNumber: data.playerNumber,
       playerName: data.playerName,
       runsData: {
         current_x: data.runsData.current_x,
@@ -129,15 +130,19 @@ const saveRes = (homeDataArray, awayDataArray) => {
       },
     });
 
-    // Save the Mongoose model instance to the database
     result.save();
   });
+};
+
+const saveResAway = (awayDataArray) => {
   if (awayDataArray.length <= 1) return;
+
   awayDataArray.forEach((data) => {
     const awayResult = new schemas.AwayDataRes({
       team: data.team,
       runType: data.runType,
       playerPos: data.playerPos,
+      playerNumber: data.playerNumber,
       playerName: data.playerName,
       runsData: {
         current_x: data.runsData.current_x,
@@ -149,14 +154,30 @@ const saveRes = (homeDataArray, awayDataArray) => {
       },
     });
 
-    // Save the Mongoose model instance to the database
     awayResult.save();
   });
 };
 
-const cleanSchema = () => {
-  schemas.AwayDataRes.deleteMany();
-};
+router.get('/getRes', async (req, res) => {
+  try {
+    const resHomeData = schemas.HomeDataRes;
+    const resAwayData = schemas.AwayDataRes;
+    const homeData = await resHomeData.find({});
+    const awayData = await resAwayData.find({});
+
+    if (homeData && awayData) {
+      res.json({
+        homeData: homeData,
+        awayData: awayData,
+      });
+      console.log('Got em!');
+    } else {
+      res.status(400).send('res not found');
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 router.post('/addRes', async (req, res) => {
   // const jsonObject = JSON.parse(data);
@@ -168,13 +189,10 @@ router.post('/addRes', async (req, res) => {
 
   //console.log(receivedData);
 
-  saveRes(receivedData.homeData, receivedData.awayData);
+  saveResHome(receivedData.homeData);
+  saveResAway(receivedData.awayData);
 
-  // const newHomeRes = new schemas.HomeDataRes(receivedData.homeData[1]);
-  // const saveHomeRes = newHomeRes.save();
   res.status(200).send('done!');
-
-  // addUser(data);
 });
 
 export default router;

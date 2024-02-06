@@ -69,6 +69,7 @@ const resultsSchema = new mongoose.Schema({
   team: { type: String },
   runType: { type: String },
   playerPos: { type: String },
+  playerNumber: { type: String },
   playerName: { type: String },
   runsData: runsDataSchema,
 });

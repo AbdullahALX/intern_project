@@ -173,7 +173,8 @@ const Movement = () => {
     const awayDataToCapture = {
       team: team,
       runType: runType,
-      playerPos: `${awayPlayerList?.[`${currentPos}`]?.[0].number}`,
+      playerNumber: `${awayPlayerList?.[`${currentPos}`]?.[0].number}`,
+      playerPos: `${homePlayerList?.[`${currentPos}`]?.[0].position}`,
       playerName: `${awayPlayerList?.[`${currentPos}`]?.[0].name}`,
       runsData: {
         current_x: runsAway.current_x,
