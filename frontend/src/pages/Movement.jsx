@@ -17,7 +17,7 @@ import {
 } from '../controllers/handleData';
 import { useNavigate } from 'react-router-dom';
 
-import Test2 from '../components/Test2';
+import Test2 from '../components/Charts';
 
 const Movement = () => {
   const [awayPlayerList, setAwayPlayerList] = useState({});

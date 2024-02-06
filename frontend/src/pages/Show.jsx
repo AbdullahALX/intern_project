@@ -1,20 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import logo from '../assets/logo.png';
-import img1 from '../assets/stat.svg';
-import { Link } from 'react-router-dom';
 
-import {
-  handlePositions,
-  cleanPlayerList,
-  playerList,
-} from '../controllers/handleData';
+import { useNavigate } from 'react-router-dom';
+
 import {
   AiFillCaretUp,
   AiFillCaretDown,
   AiFillCaretRight,
 } from 'react-icons/ai';
-import Test2 from '../components/Test2';
+import Charts from '../components/Charts';
 
 const Show = () => {
   const url = 'http://localhost:3001';
@@ -24,6 +18,8 @@ const Show = () => {
 
   const [currentTeam, setCurrentTeam] = useState();
   const [currentType, setCurrentType] = useState();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPlayerData();
@@ -43,21 +39,9 @@ const Show = () => {
       });
   };
 
-  const playerData = [
-    {
-      playerName: 'B. Gutierrez',
-      runsData: { distance: 10.119445692717527 },
-    },
-    {
-      playerName: 'A. Gutierrez',
-      runsData: { distance: 10.119445692717527 },
-    },
-    {
-      playerName: 'C. Gutierrez',
-      runsData: { distance: 10.119445692717527 },
-    },
-    // Add more player data objects as needed
-  ];
+  const handleHome = () => {
+    navigate('/');
+  };
 
   const SingleCard = ({ data }) => {
     const [showModal, setShowModal] = useState(false);
@@ -269,7 +253,7 @@ const Show = () => {
         </button>
 
         {isOpen && (
-          <div className="bg-[#8e5ebd] px-7 py-3 h-[7rem] w-[10rem]  overflow-y-auto absolute -right-[2rem]   top-[55px] flex flex-col items-start rounded rounder-t-full ">
+          <div className="bg-[#8e5ebd] px-7 py-3 h-[7rem] w-[10rem]  overflow-y-auto absolute   top-[55px] flex flex-col items-start rounded rounder-t-full ">
             <button
               className="flex  px-7 py-2   my-1  justify-between w-full  hover:bg-[#c4abdc]  active:bg-[#d2bee4]  cursor-pointer  rounded "
               onClick={() => setCurrentType('cards')}
@@ -285,6 +269,12 @@ const Show = () => {
             </button>
           </div>
         )}
+        <button
+          onClick={handleHome}
+          className="inline-flex items-center font-mono justify-center px-8 py-1 text-base font-medium text-centerbg-gray-200 active:bg-[#6a4094] border-[1px] border-[#6a4094] active:text-gray-100 rounded-full  text-gray-700 hover:bg-[#8e5ebd] hover:text-gray-200  cursor-pointer"
+        >
+          Home <AiFillCaretRight className="ml-2 mt-1 h-8" />
+        </button>
       </div>
     );
   };
@@ -317,7 +307,7 @@ const Show = () => {
         {currentType === 'cards' ? (
           <Row data={currentTeam === 'home' ? homeRes : awayRes} />
         ) : (
-          <Test2 data={currentTeam === 'home' ? homeRes : awayRes} />
+          <Charts data={currentTeam === 'home' ? homeRes : awayRes} />
         )}
       </div>
     </section>

@@ -3,7 +3,7 @@ import { Bar, Doughnut } from 'react-chartjs-2';
 
 import { Chart, registerables } from 'chart.js';
 
-const Test2 = ({ data }) => {
+const Charts = ({ data }) => {
   const playerNames = data?.map((item) => item.playerName);
   const distances = data?.map((item) => item.runsData.distance);
   Chart.register(...registerables);
@@ -60,4 +60,4 @@ const Test2 = ({ data }) => {
     </div>
   );
 };
-export default Test2;
+export default Charts;
